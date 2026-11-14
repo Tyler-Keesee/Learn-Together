@@ -1,16 +1,19 @@
 import { json, error } from '@sveltejs/kit';
 import { createClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+import { assertMigrationAuthorized } from '$lib/server/migrationGuard';
 import type { RequestHandler } from './$types';
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+export const POST: RequestHandler = async ({ request }) => {
+  assertMigrationAuthorized(request);
+  const url = env.SUPABASE_URL || env.PUBLIC_SUPABASE_URL;
+  const roleKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !roleKey) {
+    throw error(503, 'Database migration configuration is incomplete.');
   }
-});
-
-export const GET: RequestHandler = async () => {
+  const supabaseAdmin = createClient(url, roleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
   try {
     // Enable required extensions
     await supabaseAdmin.rpc('create_extension_if_not_exists', { extension_name: 'uuid-ossp' });
