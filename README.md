@@ -132,4 +132,4 @@ The current project configuration uses SvelteKit's static adapter, with a GitHub
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+No `LICENSE` file is currently present. Licensing terms have not been specified. Add a complete license file if you intend to distribute this project under MIT.
