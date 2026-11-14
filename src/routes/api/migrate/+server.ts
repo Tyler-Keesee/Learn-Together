@@ -1,28 +1,17 @@
 import { json, error } from '@sveltejs/kit';
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
-import { createClient } from '@supabase/supabase-js';
 import type { RequestHandler } from './$types';
+import { assertMigrationAuthorized } from '$lib/server/migrationGuard';
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+// Compatibility alias; only explicit authorized POST can perform schema changes.
+// The service-role key is never accepted from the request or sent to the browser.
+export const POST: RequestHandler = async ({ request, fetch }) => {
+  assertMigrationAuthorized(request);
+  const response = await fetch('/api/supabase/migrate', {
+    method: 'POST',
+    headers: { 'x-migration-token': request.headers.get('x-migration-token') || '' },
+  });
+  if (!response.ok) {
+    throw error(response.status, 'Migration failed.');
   }
-});
-
-export const GET: RequestHandler = async () => {
-  try {
-    // Run the migration endpoint
-    const response = await fetch('/api/supabase/migrate');
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.message || 'Migration failed');
-    }
-    
-    return json({ success: true, message: 'Migration completed successfully' });
-  } catch (err) {
-    console.error('Migration error:', err);
-    throw error(500, 'Failed to run migration: ' + (err as Error).message);
-  }
+  return json({ success: true, message: 'Migration completed successfully' });
 };
