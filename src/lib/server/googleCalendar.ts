@@ -1,13 +1,19 @@
 import { calendar_v3 } from '@googleapis/calendar';
 import { OAuth2Client } from 'google-auth-library';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+
+function getOAuthConfig() {
+  const clientId = env.GOOGLE_CLIENT_ID;
+  const clientSecret = env.GOOGLE_CLIENT_SECRET;
+  const redirectUri = env.GOOGLE_REDIRECT_URI;
+  if (!clientId || !clientSecret || !redirectUri) {
+    throw new Error('Google OAuth is not configured on the server.');
+  }
+  return { clientId, clientSecret, redirectUri };
+}
 
 export async function createCalendarEvent(accessToken: string, event: any) {
-  const oauth2Client = new OAuth2Client({
-    clientId: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    redirectUri: GOOGLE_REDIRECT_URI
-  });
+  const oauth2Client = new OAuth2Client(getOAuthConfig());
 
   oauth2Client.setCredentials({ access_token: accessToken });
   const calendar = new calendar_v3.Calendar({ auth: oauth2Client });
@@ -41,11 +47,7 @@ export async function createCalendarEvent(accessToken: string, event: any) {
 }
 
 export async function listCalendarEvents(accessToken: string, timeMin: string, timeMax: string) {
-  const oauth2Client = new OAuth2Client({
-    clientId: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    redirectUri: GOOGLE_REDIRECT_URI
-  });
+  const oauth2Client = new OAuth2Client(getOAuthConfig());
 
   oauth2Client.setCredentials({ access_token: accessToken });
   const calendar = new calendar_v3.Calendar({ auth: oauth2Client });
