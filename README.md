@@ -122,6 +122,30 @@ The current project configuration uses SvelteKit's static adapter, with a GitHub
 
 3. Check the generated site carefully; server-dependent authentication and API routes may require hosting beyond static GitHub Pages. Do not assume a static build supports every feature.
 
+
+## Deployment blockers and security requirements
+
+This is a full-stack SvelteKit application with server-side authentication, database migrations,
+and Google Calendar integration. **A static GitHub Pages deployment cannot run those server endpoints.**
+Do not deploy a static build and advertise authentication or synchronization as functional until
+a server-capable SvelteKit adapter, hosting configuration, and end-to-end tests are in place.
+
+The repository currently has an unresolved production build check. The CI build must pass and
+authentication, session cookies, Google OAuth callback, migration permissions, and Supabase RLS
+must be tested before releasing it.
+
+Required deployment configuration includes `PUBLIC_SUPABASE_URL` and
+`PUBLIC_SUPABASE_ANON_KEY` (public browser settings), with
+`SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_CLIENT_SECRET`, and `SESSION_SECRET`
+kept **server-side only**. Never embed service-role or OAuth client secrets in static pages.
+The `MIGRATION_ADMIN_TOKEN` must be at least 32 random characters to enable explicitly
+authorized administrative migrations; without it they are disabled.
+
+Privileged database migrations are available only through an authenticated POST to
+`/api/supabase/migrate` or its compatibility alias `/api/migrate`.
+Set the `x-migration-token` request header to the separately configured admin token.
+Do not expose migrations through GET or leave a privileged endpoint unprotected.
+
 ## Technologies Used
 
 - [SvelteKit](https://kit.svelte.dev/)
