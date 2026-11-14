@@ -21,8 +21,8 @@ A platform for collaborative learning where users can share tutorials, learn fro
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/RescuePC-Repairs/Learn-Together.git
-   cd Learn-Together/learntogether
+   git clone https://github.com/Tyler-Keesee/Learn-Together.git
+   cd Learn-Together
    ```
 
 2. Install dependencies:
@@ -107,20 +107,20 @@ GOOGLE_API_KEY=your_google_api_key
 
 ### Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Flearntogether&env=SUPABASE_URL,SUPABASE_ANON_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,GOOGLE_REDIRECT_URI,GOOGLE_API_KEY&project-name=learntogether&repository-name=learntogether)
+The current project configuration uses SvelteKit's static adapter, with a GitHub Pages base path. A Vercel deployment has not been verified; configure and test an appropriate adapter before deployment. Never expose `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_CLIENT_SECRET`, or `SESSION_SECRET` to client-side code.
 
-### Manual Deployment
-2. Install gh-pages if not already installed:
+### Static GitHub Pages deployment (requires a successful build)
+1. Install gh-pages if not already installed:
    ```bash
    npm install --save-dev gh-pages
    ```
 
-3. Deploy to GitHub Pages:
+2. Deploy to GitHub Pages:
    ```bash
    npm run deploy
    ```
 
-4. Alternatively, push to the `main` branch and let GitHub Actions handle the deployment.
+3. Check the generated site carefully; server-dependent authentication and API routes may require hosting beyond static GitHub Pages. Do not assume a static build supports every feature.
 
 ## Technologies Used
 
