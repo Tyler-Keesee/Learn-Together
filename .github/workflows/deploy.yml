@@ -1,58 +1,27 @@
-name: Deploy to GitHub Pages
-
+name: Verify SvelteKit build (Pages deployment unsupported)
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-only:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_SUPABASE_URL: https://example.supabase.co
+      PUBLIC_SUPABASE_ANON_KEY: fake-ci-public-key
+      GOOGLE_CLIENT_ID: fake-ci-client-id
+      GOOGLE_CLIENT_SECRET: fake-ci-secret
+      GOOGLE_REDIRECT_URI: http://localhost:3000/api/auth/callback
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build
-        env:
-          NODE_ENV: production
-          VITE_BASE_PATH: /Learn-Together
-        run: |
-          npm run build
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'build'
-  
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - name: Explain deployment limitation
+        run: echo "SvelteKit Google OAuth and database APIs require server-side hosting; GitHub Pages cannot run these routes. No deployment performed."
