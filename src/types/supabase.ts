@@ -7,7 +7,8 @@ declare global {
       getSession(): Promise<Session | null>;
     }
     interface PageData {
-      session: Session | null;
+      session?: Session | null;
+      user?: UserProfile | null;
     }
   }
 }
