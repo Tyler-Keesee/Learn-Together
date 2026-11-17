@@ -1,5 +1,8 @@
 # Learn Together
 
+> **Current build status (November 16, 2026):** The `main` branch is **not yet a verified clean clone/build**. CI found invalid SvelteKit configuration, Tailwind incompatibilities, missing or mismatched imports, and Svelte/TypeScript source errors. The proposed repairs are still under review in [PR #2](https://github.com/Tyler-Keesee/Learn-Together/pull/2); do not deploy this app or assume `npm run check` or `npm run build` passes until its CI is green. The setup instructions below are the intended steps, not proof that current `main` works.
+
+
 ## Windows 11: reproducible setup (PowerShell)
 
 Install Git and Node.js 22 LTS; then run **each command individually**:
