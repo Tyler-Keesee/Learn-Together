@@ -114,6 +114,8 @@ A platform for collaborative learning where users can share tutorials, learn fro
 
 ## Environment Variables
 
+Use `.env.example` as a template. Server-only `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_CLIENT_SECRET` and `MIGRATION_ADMIN_TOKEN` must never enter browser bundles or GitHub commits.
+
 Create a `.env` file in the root directory with the following variables:
 
 ```env
@@ -166,18 +168,13 @@ GOOGLE_API_KEY=your_google_api_key
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Flearntogether&env=SUPABASE_URL,SUPABASE_ANON_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,GOOGLE_REDIRECT_URI,GOOGLE_API_KEY&project-name=learntogether&repository-name=learntogether)
 
-### Manual Deployment
-2. Install gh-pages if not already installed:
-   ```bash
-   npm install --save-dev gh-pages
-   ```
+### Deployment compatibility
 
-3. Deploy to GitHub Pages:
-   ```bash
-   npm run deploy
-   ```
+GitHub Pages can host only static assets and **cannot run this application's Google OAuth, Supabase session hooks, calendar APIs, or privileged database-migration endpoints**. The former automatic Pages deployment has therefore been replaced by a **build-verification-only** workflow. No live deployment is performed.
 
-4. Alternatively, push to the `main` branch and let GitHub Actions handle the deployment.
+For real functionality, migrate the adapter to a reviewed server-side deployment target (such as SvelteKit's Node adapter on a managed server), configure environment variables in the host's secret manager, and verify auth redirects, database RLS and the Google Calendar flow. The current static adapter passes build checks but is **not production-deployment-ready**. Never put Supabase service-role or OAuth client-secret values in `PUBLIC_` environment variables.
+
+The `/api/migrate` and `/api/supabase/migrate` schema-changing endpoints now accept **POST requests only** with a valid `Authorization: Bearer` token matching the server-only `MIGRATION_ADMIN_TOKEN` secret. Rotate any existing exposed credentials and review database migrations and RLS before using them. Do not expose these endpoints to public unauthenticated traffic.
 
 ## Technologies Used
 
