@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   
   // Mock data - will be replaced with real data from Supabase
-  let matches = [
+  type MatchItem = { id: number; name: string; avatar: string; bio: string; skills: string[]; matchScore: number; availability: string[] };
+  let matches: MatchItem[] = [
     {
       id: 1,
       name: 'Jane Smith',
@@ -41,7 +42,7 @@
     }
   ];
   
-  let selectedMatch = null;
+  let selectedMatch: MatchItem | null = null;
   let isLoading = true;
   let searchQuery = '';
   
@@ -52,7 +53,7 @@
     }, 1000);
   });
   
-  function selectMatch(match) {
+  function selectMatch(match: MatchItem) {
     selectedMatch = match;
     // On mobile, scroll to details when a match is selected
     if (window.innerWidth < 1024) {
@@ -60,12 +61,12 @@
     }
   }
   
-  function handleMessage(matchId) {
+  function handleMessage(matchId: number) {
     // TODO: Implement messaging
     console.log('Message match:', matchId);
   }
   
-  function handleSchedule(matchId) {
+  function handleSchedule(matchId: number) {
     // TODO: Implement scheduling
     console.log('Schedule with match:', matchId);
   }
