@@ -1,16 +1,28 @@
 import { json, error } from '@sveltejs/kit';
 import { createClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+import { timingSafeEqual } from 'node:crypto';
 import type { RequestHandler } from './$types';
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+// Database schema changes are explicitly authorized manual operations only.
+function authorized(header: string | null, expected: string | undefined): boolean {
+  if (!expected || !header?.startsWith('Bearer ')) return false;
+  const supplied = Buffer.from(header.slice(7));
+  const secret = Buffer.from(expected);
+  return supplied.length === secret.length && timingSafeEqual(supplied, secret);
+}
 
-export const GET: RequestHandler = async () => {
+export const POST: RequestHandler = async ({ request }) => {
+  if (!authorized(request.headers.get('authorization'), env.MIGRATION_ADMIN_TOKEN)) {
+    throw error(401, 'Unauthorized');
+  }
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw error(503, 'Database migration credentials are not configured');
+  }
+  const supabaseAdmin = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+
   try {
     // Enable required extensions
     await supabaseAdmin.rpc('create_extension_if_not_exists', { extension_name: 'uuid-ossp' });
