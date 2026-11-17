@@ -109,7 +109,7 @@
   <div class="py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-12 lg:gap-6">
-        {/* Matches List */}
+        <!-- Matches List -->
         <div class="lg:col-span-5 xl:col-span-4">
           <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="p-4 border-b border-gray-200">
@@ -192,7 +192,7 @@
           </div>
         </div>
         
-        {/* Match Details */}
+        <!-- Match Details -->
         <div id="match-details" class="mt-6 lg:mt-0 lg:col-span-7 xl:col-span-8">
           {#if !selectedMatch}
             <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full flex items-center justify-center">
