@@ -1,0 +1,27 @@
+name: Temporary lockfile update (remove after branch repair)
+on:
+  push:
+    branches: [fix/clone-build-validation-2026]
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Commit synchronized lockfile only to review branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- package-lock.json; then
+            git add package-lock.json
+            git commit -m "Synchronize npm lockfile to Tailwind 3 [skip ci]"
+            git push origin HEAD:refs/heads/fix/clone-build-validation-2026
+          fi
