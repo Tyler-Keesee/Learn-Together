@@ -5,7 +5,7 @@
   import GoogleCalendarConnect from '$lib/components/GoogleCalendarConnect.svelte';
   import AddToCalendar from '$lib/components/AddToCalendar.svelte';
   
-  let events: Array<{ id?: string; summary?: string; start?: { date?: string; dateTime?: string }; end?: { date?: string; dateTime?: string }; location?: string }> = [];
+  let events: Array<{ id?: string; summary?: string; htmlLink?: string; start: { date?: string; dateTime?: string }; end?: { date?: string; dateTime?: string }; location?: string }> = [];
   let loading = false;
   let error = '';
   
@@ -134,7 +134,7 @@
                       </p>
                       <div class="ml-2 flex-shrink-0 flex">
                         <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {new Date(event.start.dateTime || event.start.date).toLocaleDateString()}
+                          {new Date(event.start.dateTime || event.start.date || '').toLocaleDateString()}
                         </p>
                       </div>
                     </div>
