@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   
   // Mock data - will be replaced with real data from Supabase
@@ -29,7 +29,7 @@
     }
   }
   
-  function removeTeachingSkill(skill) {
+  function removeTeachingSkill(skill: string) {
     skillsTeaching = skillsTeaching.filter(s => s !== skill);
   }
   
@@ -40,11 +40,11 @@
     }
   }
   
-  function removeLearningSkill(skill) {
+  function removeLearningSkill(skill: string) {
     skillsLearning = skillsLearning.filter(s => s !== skill);
   }
   
-  async function handleSubmit(e) {
+  async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     
     if (!name || !email) {
@@ -65,7 +65,7 @@
       success = 'Profile updated successfully!';
       setTimeout(() => success = '', 3000);
     } catch (err) {
-      error = err.message || 'Failed to update profile';
+      error = err instanceof Error ? err.message : 'Failed to update profile';
     } finally {
       isSaving = false;
     }

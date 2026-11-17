@@ -5,7 +5,7 @@
   import GoogleCalendarConnect from '$lib/components/GoogleCalendarConnect.svelte';
   import AddToCalendar from '$lib/components/AddToCalendar.svelte';
   
-  let events = [];
+  let events: Array<{ id?: string; summary?: string; htmlLink?: string; start: { date?: string; dateTime?: string }; end?: { date?: string; dateTime?: string }; location?: string }> = [];
   let loading = false;
   let error = '';
   
@@ -134,7 +134,7 @@
                       </p>
                       <div class="ml-2 flex-shrink-0 flex">
                         <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {new Date(event.start.dateTime || event.start.date).toLocaleDateString()}
+                          {new Date(event.start.dateTime || event.start.date || '').toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -155,15 +155,13 @@
                             />
                           </svg>
                           {new Date(event.start.dateTime || `${event.start.date}T00:00:00`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {event.end && (
-                            <>
-                              <span class="mx-1">-</span>
-                              {new Date(event.end.dateTime || `${event.end.date}T23:59:59`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </>
-                          )}
+                          {#if event.end}
+                            <span class="mx-1">-</span>
+                            {new Date(event.end.dateTime || `${event.end.date}T23:59:59`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {/if}
                         </p>
                       </div>
-                      {event.location && (
+                      {#if event.location}
                         <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                           <svg
                             class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
@@ -180,7 +178,7 @@
                           </svg>
                           {event.location}
                         </div>
-                      )}
+                      {/if}
                     </div>
                   </div>
                 </a>

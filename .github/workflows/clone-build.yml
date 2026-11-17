@@ -1,0 +1,25 @@
+name: SvelteKit clean clone checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      PUBLIC_SUPABASE_URL: https://example.supabase.co
+      PUBLIC_SUPABASE_ANON_KEY: fake-ci-public-key
+      GOOGLE_CLIENT_ID: fake-ci-client-id
+      GOOGLE_CLIENT_SECRET: fake-ci-secret
+      GOOGLE_REDIRECT_URI: http://localhost:3000/api/auth/callback
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build

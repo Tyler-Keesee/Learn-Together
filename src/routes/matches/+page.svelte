@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   
   // Mock data - will be replaced with real data from Supabase
-  let matches = [
+  type MatchItem = { id: number; name: string; avatar: string; bio: string; skills: string[]; matchScore: number; availability: string[] };
+  let matches: MatchItem[] = [
     {
       id: 1,
       name: 'Jane Smith',
@@ -41,7 +42,7 @@
     }
   ];
   
-  let selectedMatch = null;
+  let selectedMatch: MatchItem | null = null;
   let isLoading = true;
   let searchQuery = '';
   
@@ -52,7 +53,7 @@
     }, 1000);
   });
   
-  function selectMatch(match) {
+  function selectMatch(match: MatchItem) {
     selectedMatch = match;
     // On mobile, scroll to details when a match is selected
     if (window.innerWidth < 1024) {
@@ -60,12 +61,12 @@
     }
   }
   
-  function handleMessage(matchId) {
+  function handleMessage(matchId: number) {
     // TODO: Implement messaging
     console.log('Message match:', matchId);
   }
   
-  function handleSchedule(matchId) {
+  function handleSchedule(matchId: number) {
     // TODO: Implement scheduling
     console.log('Schedule with match:', matchId);
   }
@@ -109,7 +110,7 @@
   <div class="py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-12 lg:gap-6">
-        {/* Matches List */}
+        <!-- Matches List -->
         <div class="lg:col-span-5 xl:col-span-4">
           <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="p-4 border-b border-gray-200">
@@ -192,7 +193,7 @@
           </div>
         </div>
         
-        {/* Match Details */}
+        <!-- Match Details -->
         <div id="match-details" class="mt-6 lg:mt-0 lg:col-span-7 xl:col-span-8">
           {#if !selectedMatch}
             <div class="bg-white shadow overflow-hidden sm:rounded-lg h-full flex items-center justify-center">
@@ -227,7 +228,7 @@
                   <div class="flex space-x-3">
                     <button 
                       type="button" 
-                      on:click={() => handleMessage(selectedMatch.id)}
+                      on:click={() => { if (selectedMatch) handleMessage(selectedMatch.id); }}
                       class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -237,7 +238,7 @@
                     </button>
                     <button 
                       type="button" 
-                      on:click={() => handleSchedule(selectedMatch.id)}
+                      on:click={() => { if (selectedMatch) handleSchedule(selectedMatch.id); }}
                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

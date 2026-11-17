@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { generateAuthUrl } from '$lib/server/googleAuth';
-  import { page } from '$app/stores';
   import { onMount } from 'svelte';
 
   let isConnecting = false;

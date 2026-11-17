@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { calendar as createCalendarClient } from '@googleapis/calendar';
 import { OAuth2Client } from 'google-auth-library';
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } from '$env/static/private';
 
@@ -10,7 +10,7 @@ export async function createCalendarEvent(accessToken: string, event: any) {
   });
 
   oauth2Client.setCredentials({ access_token: accessToken });
-  const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+  const calendar = createCalendarClient({ version: 'v3', auth: oauth2Client });
 
   try {
     const response = await calendar.events.insert({
@@ -48,7 +48,7 @@ export async function listCalendarEvents(accessToken: string, timeMin: string, t
   });
 
   oauth2Client.setCredentials({ access_token: accessToken });
-  const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+  const calendar = createCalendarClient({ version: 'v3', auth: oauth2Client });
 
   try {
     const response = await calendar.events.list({

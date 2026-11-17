@@ -61,26 +61,4 @@ interface Message {
   receiver: UserProfile;
 }
 
-interface Session {
-  user: {
-    id: string;
-    email: string;
-    user_metadata: {
-      full_name?: string;
-      avatar_url?: string;
-    };
-  };
-  expires_at: number;
-}
-
-declare namespace App {
-  interface Locals {
-    session: Session | null;
-    user: UserProfile | null;
-  }
-
-  interface PageData {
-    session: Session | null;
-    user: UserProfile | null;
-  }
-}
+// App session/locals types are maintained in src/types/supabase.ts.

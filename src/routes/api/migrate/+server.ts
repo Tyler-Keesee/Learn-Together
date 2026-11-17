@@ -1,28 +1,26 @@
-import { json, error } from '@sveltejs/kit';
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
-import { createClient } from '@supabase/supabase-js';
+import { error } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { timingSafeEqual } from 'node:crypto';
 import type { RequestHandler } from './$types';
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+function authorized(header: string | null, expected: string | undefined): boolean {
+  if (!expected || !header?.startsWith('Bearer ')) return false;
+  const supplied = Buffer.from(header.slice(7));
+  const secret = Buffer.from(expected);
+  return supplied.length === secret.length && timingSafeEqual(supplied, secret);
+}
 
-export const GET: RequestHandler = async () => {
-  try {
-    // Run the migration endpoint
-    const response = await fetch('/api/supabase/migrate');
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.message || 'Migration failed');
-    }
-    
-    return json({ success: true, message: 'Migration completed successfully' });
-  } catch (err) {
-    console.error('Migration error:', err);
-    throw error(500, 'Failed to run migration: ' + (err as Error).message);
+// Explicit manual administration only: a GET request must never mutate database schema.
+export const POST: RequestHandler = async ({ request, fetch, url }) => {
+  if (!authorized(request.headers.get('authorization'), env.MIGRATION_ADMIN_TOKEN)) {
+    throw error(401, 'Unauthorized');
   }
+  const response = await fetch(new URL('/api/supabase/migrate', url), {
+    method: 'POST',
+    headers: { authorization: request.headers.get('authorization') || '' }
+  });
+  return new Response(await response.text(), {
+    status: response.status,
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+  });
 };
