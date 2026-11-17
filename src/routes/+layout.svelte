@@ -37,7 +37,7 @@
           user,
           loading: false,
           error: null,
-          profile: user?.user_metadata || null
+          profile: null
         }));
       }
     });
@@ -50,7 +50,7 @@
         user,
         loading: false,
         error: null,
-        profile: user?.user_metadata || null
+        profile: null
       }));
     });
     
