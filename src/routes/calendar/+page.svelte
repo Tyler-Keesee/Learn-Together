@@ -155,15 +155,13 @@
                             />
                           </svg>
                           {new Date(event.start.dateTime || `${event.start.date}T00:00:00`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {event.end && (
-                            <>
-                              <span class="mx-1">-</span>
-                              {new Date(event.end.dateTime || `${event.end.date}T23:59:59`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </>
-                          )}
+                          {#if event.end}
+                            <span class="mx-1">-</span>
+                            {new Date(event.end.dateTime || `${event.end.date}T23:59:59`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {/if}
                         </p>
                       </div>
-                      {event.location && (
+                      {#if event.location}
                         <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                           <svg
                             class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
@@ -180,7 +178,7 @@
                           </svg>
                           {event.location}
                         </div>
-                      )}
+                      {/if}
                     </div>
                   </div>
                 </a>
