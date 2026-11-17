@@ -5,7 +5,7 @@
   import GoogleCalendarConnect from '$lib/components/GoogleCalendarConnect.svelte';
   import AddToCalendar from '$lib/components/AddToCalendar.svelte';
   
-  let events = [];
+  let events: Array<{ id?: string; summary?: string; start?: { date?: string; dateTime?: string }; end?: { date?: string; dateTime?: string }; location?: string }> = [];
   let loading = false;
   let error = '';
   
