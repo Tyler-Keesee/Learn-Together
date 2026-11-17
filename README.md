@@ -1,5 +1,62 @@
 # Learn Together
 
+## Windows 11: reproducible setup (PowerShell)
+
+Install Git and Node.js 22 LTS; then run **each command individually**:
+
+```powershell
+git clone https://github.com/Tyler-Keesee/Learn-Together.git
+```
+
+```powershell
+Set-Location .\Learn-Together
+```
+
+```powershell
+node --version
+```
+
+```powershell
+npm --version
+```
+
+```powershell
+npm ci
+```
+
+```powershell
+Copy-Item .env.example .env
+```
+
+```powershell
+notepad .env
+```
+
+**Before running the server**, edit the `.env` placeholders with your own supported Supabase and OAuth configuration. The `supabase/migrations` directory supplies SQL migration files; apply migrations only after reviewing them and confirming the **correct test database**. Do not run migrations automatically against production.
+
+After saving `.env`:
+
+```powershell
+npm run dev
+```
+
+Open **http://localhost:3000/** (port set in `vite.config.ts`). Stop with Ctrl+C. To check code before deploying:
+
+```powershell
+npm run check
+```
+
+```powershell
+npm run build
+```
+
+This SvelteKit app requires configured Supabase credentials for account/database operations and Google OAuth keys for Google sign-in/calendar functionality. `npm ci` should be run from the **repository root**. Never paste secrets into chat or commit an `.env` file.
+
+**Testing limitation:** Dependencies, app compile, database schema, and OAuth login are independent checks; passing `npm ci` alone does not validate backend integrations.
+
+---
+
+
 A platform for collaborative learning where users can share tutorials, learn from each other, and connect with like-minded learners.
 
 ## Features
@@ -21,8 +78,8 @@ A platform for collaborative learning where users can share tutorials, learn fro
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/RescuePC-Repairs/Learn-Together.git
-   cd Learn-Together/learntogether
+   git clone https://github.com/Tyler-Keesee/Learn-Together.git
+   cd Learn-Together
    ```
 
 2. Install dependencies:
